@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Magic</title>
+  <script type="text/javascript">
+    const objects = [];
+
+    class Circle {
+      constructor(x, y, radius, rgb) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.rgb = rgb
+      }
+
+      render(ctx) {
+        const circle = new Path2D();
+        ctx.fillStyle = `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0.5)`;
+        circle.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fill(circle);
+      }
+    }
+
+    // click handler to add random rects
+    window.addEventListener('mousemove', function(e) {
+      addCircle(e.clientX, e.clientY, randomRgb());
+    });
+
+    window.addEventListener('touchmove', function(e) {
+      addCircle(e.touches[0].clientX, e.touches[0].clientY, randomRgb());
+    });
+
+    function randomRgb(){
+      return {
+        r: Math.floor(Math.random() * Math.floor(255)),
+        g: Math.floor(Math.random() * Math.floor(255)),
+        b: Math.floor(Math.random() * Math.floor(255))
+      }
+    }
+
+    function addCircle(x,y,rgb) {
+      objects.push(
+        new Circle(x,y,50,rgb)
+      );
+    }
+
+    function draw() {
+      const canvas = document.getElementById('canvas');
+      if (canvas.getContext) {
+        const ctx = canvas.getContext('2d');
+
+
+        // const circle = new Path2D();
+        // ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
+        // circle.moveTo(125, 35);
+        // circle.arc(100, 35, 25, 0, 2 * Math.PI);
+        // ctx.fill(circle);
+
+        function animate() {
+          // call again next time we can draw
+          requestAnimationFrame(animate);
+          // clear canvas
+          ctx.clearRect(0, 0, 1000, 500);
+          // draw everything
+          objects.forEach(function(o) {
+            o.render(ctx);
+          });
+
+        }
+
+        animate();
+      }
+    }
+  </script>
+  <style type="text/css">
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body onload="draw();">
+  <canvas id="canvas" width="1000" height="500"></canvas>
+</body>
+
+</html>
